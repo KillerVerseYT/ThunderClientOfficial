@@ -50,9 +50,9 @@ jobs:
     allow_forks: true
     if_no_artifact_found: fail
 
-       - name: Get JRE17
-         uses: dawidd6/action-download-artifact@v9
-         with:
+     - name: Get JRE17
+       uses: dawidd6/action-download-artifact@v9
+       with:
           workflow: build.yml
           path: app_pojavlauncher/src/main/assets/components/jre-new
           workflow_conclusion: success

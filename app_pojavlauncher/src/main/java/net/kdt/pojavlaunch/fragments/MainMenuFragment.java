@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.kdt.mcgui.mcVersionSpinner;
@@ -50,7 +51,14 @@ public class MainMenuFragment extends Fragment {
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
-        mNewsButton.setOnClickListener(v -> Tools.openURL(requireActivity(), Tools.URL_HOME));
+        mNewsButton.setOnClickListener(v -> new AlertDialog.Builder(requireContext())
+                .setTitle("Thunder Client")
+                .setMessage("Thunder Client is a Minecraft: Java Edition launcher for Android, built on the PojavLauncher open-source project.\n\n"
+                        + "PojavLauncher components and notices remain subject to their original licenses.\n\n"
+                        + "Join the Thunder Client community for updates and support.")
+                .setNegativeButton("Close", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("Discord", (dialog, which) -> Tools.openURL(requireActivity(), getString(R.string.discord_invite)))
+                .show());
         mDiscordButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.discord_invite)));
         mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
         mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation(false));

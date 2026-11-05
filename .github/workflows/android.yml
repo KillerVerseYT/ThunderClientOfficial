@@ -26,6 +26,36 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
+
+name: Android CI
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'l10n_v3_openjdk2'
+    types: [ opened, reopened ]
+  push:
+    branches-ignore:
+      - 'l10n_v3_openjdk2'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      GPLAY_KEYSTORE_PASSWORD: ${{ secrets.GPLAY_KEYSTORE_PASSWORD }}
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
           java-version: '21'
 
       - name: Get LTW
@@ -43,6 +73,7 @@ jobs:
           repo: PojavLauncherTeam/android-openjdk-build-multiarch
           branch: buildjre8
           name: jre8-pojav
+          search_artifacts: true
 
       - name: Get JRE17
         uses: dawidd6/action-download-artifact@v9
@@ -71,9 +102,7 @@ jobs:
       - name: Build JRE JAR files
         run: |
           ./scripts/languagelist_updater.sh
-
           mkdir out
-          # Build JRE JAR files (security manager, etc...)
           gradle :jre_lwjgl3glfw:build --no-daemon
 
       - name: Set up JDK 17
@@ -90,7 +119,6 @@ jobs:
 
       - name: Build Debug .apk
         run: |
-          # Build the launcher
           gradle :app_pojavlauncher:assembleDebug
           mv app_pojavlauncher/build/outputs/apk/debug/app_pojavlauncher-debug.apk out/app-debug.apk
 
@@ -101,6 +129,7 @@ jobs:
           rm -r app_pojavlauncher/src/main/assets/components/jre-21
           gradle assembleDebug
           mv app_pojavlauncher/build/outputs/apk/debug/app_pojavlauncher-debug.apk out/app-debug-noruntime.apk
+
       - name: Gen md5sums
         run: |
           md5sum out/app-debug.apk > out/app-debug.md5
@@ -126,6 +155,16 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GPLAY_SERVICE_JSON }}
           packageName: net.kdt.pojavlaunch
           releaseFiles: out/app-gplay.aab
+          track: internal
+          inAppUpdatePriority: 5
+
+      - name: Upload APK (without runtime)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-noruntime
+          path: out/app-debug-noruntime.*
+
+b
           track: internal
           inAppUpdatePriority: 5
 

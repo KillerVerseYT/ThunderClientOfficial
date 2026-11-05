@@ -1,0 +1,1 @@
+Thunder Client first-pass working copy: branding, palette, launcher landscape orientation, and dashboard layout.

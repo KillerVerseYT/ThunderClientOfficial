@@ -50,7 +50,7 @@ jobs:
     allow_forks: true
     if_no_artifact_found: fail
 
-      - name: Get JRE 17
+       - name: Get JRE17
         uses: dawidd6/action-download-artifact@v9
         with:
           workflow: build.yml

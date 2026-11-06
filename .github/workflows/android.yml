@@ -50,15 +50,21 @@ jobs:
     allow_forks: true
     if_no_artifact_found: fail
 
-        - name: Get JRE17
-      uses: dawidd6/action-download-artifact@v6
+      - name: Get JRE17
+      uses: dawidd6/action-download-artifact@v9
       with:
-        workflow: build.yml
-        path: app_pojavlauncher/src/main/assets/components/jre-new
-        workflow_conclusion: success
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         repo: PojavLauncherTeam/android-openjdk-build-multiarch
+        workflow: build.yml
         branch: buildjre17-21
+        workflow_conclusion: success
         name: jre17-pojav
+        name_is_regexp: false
+        path: app_pojavlauncher/src/main/assets/components/jre-new
+        search_artifacts: true
+        check_artifacts: true
+        allow_forks: true
+        if_no_artifact_found: fail
 
       - name: Get JRE21
         uses: dawidd6/action-download-artifact@v9
